@@ -13,11 +13,12 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
 
     steps:
-      - name: Set Time Zone
-        run: sudo systemsetup -settimezone America/Mexico_City
 
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -31,7 +32,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install --cache-dir ~/.pip-cache -r requirements.txt --user
+        run: pip install --cache-dir ~/.pip-cache -r requirements.txt
 
       - name: Run main scripts
         run: |
