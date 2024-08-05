@@ -61,7 +61,7 @@ def main():
             try:
                 instance = user.user(userIds[i], authKeys[i], secretKeys[i])
                 time.sleep(3)
-                logger.info(f"Logging in to account {i+1}/{userNums}")
+                logger.info(f"Signing in to account {i+1}/{userNums}")
 
                 time.sleep(1)
                 instance.topLogin_s()
