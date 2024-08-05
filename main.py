@@ -32,7 +32,7 @@ except EnvironmentError as e:
     logger.critical(e)
     exit(1)
 
-fate_region = 'JP'
+fate_region = 'NA'
 
 userNums = len(userIds)
 authKeyNums = len(authKeys)
@@ -40,7 +40,7 @@ secretKeyNums = len(secretKeys)
 
 def get_latest_verCode():
     try:
-        endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/JP/VerCode.json"
+        endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/NA/VerCode.json"
         response = requests.get(endpoint)
         response.raise_for_status()
         response_data = response.json()
