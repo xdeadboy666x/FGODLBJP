@@ -2,8 +2,6 @@ import os
 import requests
 import time
 import json
-from datetime import datetime
-from croniter import croniter
 import fgourl
 import user
 import coloredlogs
@@ -46,7 +44,7 @@ def main():
             try:
                 instance = user.user(userIds[i], authKeys[i], secretKeys[i])
                 time.sleep(3)
-                logger.info(f"\n ======================================== \n [+] Signed in \n ======================================== " )
+                logger.info(f"\n ======================================== \n [+] 登录账号 \n ======================================== " )
 
                 time.sleep(1)
                 instance.topLogin_s()
@@ -68,4 +66,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
