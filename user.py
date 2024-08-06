@@ -483,7 +483,7 @@ class user:
         max_base_lim_it_s_Num = None 
         max_base_prices = None
         max_base_prices_s = None
-        max_base_name_s = 'activity'
+        max_base_name_s = '活动'
         num = None
 
         for item in fdata:
