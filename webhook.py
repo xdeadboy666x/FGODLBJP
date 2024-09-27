@@ -15,7 +15,7 @@ dracula_colors = {
 }
 
 def topLogin(
-    data: List[Union["user.Rewards", "user.Login", Union["user.Bonus", str]]]
+    data: List[Union["user.Rewards", "user.Login", Union["user.Bonus", str]]],
 ) -> None:
     endpoint = main.webhook_discord_url
 
@@ -41,68 +41,71 @@ def topLogin(
 
     jsonData = {
         "content": None,
-        "embeds": [
-            {
-                "title": f"Fate/Grand Order Daily Login Manager - {main.fate_region}",
-                "description": f"Login success.\n\n{messageBonus}",
-                "color": dracula_colors["pink"],  # Dracula pink color
-                "fields": [
-                    {"name": "Master", "value": f"{name1}", "inline": True},
-                    {"name": "ID", "value": f"{fpids1}", "inline": True},
-                    {"name": "Level", "value": f"{rewards.level}", "inline": True},
-                    {
-                        "name": "Summon Ticket",
-                        "value": f"{rewards.ticket}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Saint Quartz",
-                        "value": f"{rewards.stone}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Saint Quartz Fragment",
-                        "value": f"{rewards.sqf01}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Fruit",
-                        "value": f"Golden: {rewards.goldenfruit}\nSilver: {rewards.silverfruit}\nBronze: {rewards.bronzefruit}\nBronzed Cobalt: {rewards.bluebronzefruit}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Bronze Sapling",
-                        "value": f"{rewards.bluebronzesapling}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Consecutive / Total Logins",
-                        "value": f"{login.login_days} days / {login.total_days} days",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Pure Prism",
-                        "value": f"{rewards.pureprism}",
-                        "inline": True,
-                    },
-                    {"name": "FP", "value": f"{login.total_fp}", "inline": True},
-                    {"name": "Gained FP", "value": f"+{login.add_fp}", "inline": True},
-                    {
-                        "name": "Current AP",
-                        "value": f"{login.remaining_ap}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "Holy Grail",
-                        "value": f"{rewards.holygrail}",
-                        "inline": True,
-                    },
-                ],
-                "thumbnail": {
-                    "url": "https://static.atlasacademy.io/JP/External/FGOPoker/314.png"
+        "embeds": [{
+            "title": f"Fate/Grand Order Daily Login Manager - {main.fate_region}",
+            "description": f"Login success.\n\n{messageBonus}",
+            "color": dracula_colors["pink"],  # Dracula pink color
+            "fields": [
+                {"name": "Master", "value": f"{name1}", "inline": True},
+                {"name": "ID", "value": f"{fpids1}", "inline": True},
+                {"name": "Level", "value": f"{rewards.level}", "inline": True},
+                {
+                    "name": "Summon Ticket",
+                    "value": f"{rewards.ticket}",
+                    "inline": True,
                 },
-            }
-        ],
+                {
+                    "name": "Saint Quartz",
+                    "value": f"{rewards.stone}",
+                    "inline": True,
+                },
+                {
+                    "name": "Saint Quartz Fragment",
+                    "value": f"{rewards.sqf01}",
+                    "inline": True,
+                },
+                {
+                    "name": "Fruit",
+                    "value": (
+                        f"Golden: {rewards.goldenfruit}\nSilver:"
+                        f" {rewards.silverfruit}\nBronze:"
+                        f" {rewards.bronzefruit}\nBronzed Cobalt:"
+                        f" {rewards.bluebronzefruit}"
+                    ),
+                    "inline": True,
+                },
+                {
+                    "name": "Bronze Sapling",
+                    "value": f"{rewards.bluebronzesapling}",
+                    "inline": True,
+                },
+                {
+                    "name": "Consecutive / Total Logins",
+                    "value": f"{login.login_days} days / {login.total_days} days",
+                    "inline": True,
+                },
+                {
+                    "name": "Pure Prism",
+                    "value": f"{rewards.pureprism}",
+                    "inline": True,
+                },
+                {"name": "FP", "value": f"{login.total_fp}", "inline": True},
+                {"name": "Gained FP", "value": f"+{login.add_fp}", "inline": True},
+                {
+                    "name": "Current AP",
+                    "value": f"{login.remaining_ap}",
+                    "inline": True,
+                },
+                {
+                    "name": "Holy Grail",
+                    "value": f"{rewards.holygrail}",
+                    "inline": True,
+                },
+            ],
+            "thumbnail": {
+                "url": "https://static.atlasacademy.io/JP/External/FGOPoker/314.png"
+            },
+        }],
         "attachments": [],
     }
 
@@ -115,23 +118,19 @@ def shop(item: str, quantity: int) -> None:
 
     jsonData = {
         "content": None,
-        "embeds": [
-            {
-                "title": f"Fate/Grand Order Shop Manager - {main.fate_region}",
-                "description": "",
-                "color": dracula_colors["cyan"],  # Dracula cyan color
-                "fields": [
-                    {
-                        "name": f"Da Vinci's Workshop",
-                        "value": f"Used {40 * int(quantity)} AP on x{quantity} {item}",
-                        "inline": False,
-                    }
-                ],
-                "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara10.png"
-                },
-            }
-        ],
+        "embeds": [{
+            "title": f"Fate/Grand Order Shop Manager - {main.fate_region}",
+            "description": "",
+            "color": dracula_colors["cyan"],  # Dracula cyan color
+            "fields": [{
+                "name": f"Da Vinci's Workshop",
+                "value": f"Used {40 * int(quantity)} AP on x{quantity} {item}",
+                "inline": False,
+            }],
+            "thumbnail": {
+                "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara10.png"
+            },
+        }],
         "attachments": [],
     }
 
@@ -165,23 +164,19 @@ def drawFP(servants: list, missions: list) -> None:
 
     jsonData = {
         "content": None,
-        "embeds": [
-            {
-                "title": f"Fate/Grand Order FP Summon Manager - {main.fate_region}",
-                "description": f"{message_mission}",
-                "color": dracula_colors["green"],  # Dracula green color
-                "fields": [
-                    {
-                        "name": "FP Gacha results",
-                        "value": f"{message_servant}\n",
-                        "inline": False,
-                    }
-                ],
-                "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara04.png"
-                },
-            }
-        ],
+        "embeds": [{
+            "title": f"Fate/Grand Order FP Summon Manager - {main.fate_region}",
+            "description": f"{message_mission}",
+            "color": dracula_colors["green"],  # Dracula green color
+            "fields": [{
+                "name": "FP Gacha results",
+                "value": f"{message_servant}\n",
+                "inline": False,
+            }],
+            "thumbnail": {
+                "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara04.png"
+            },
+        }],
         "attachments": [],
     }
 
