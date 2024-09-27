@@ -344,7 +344,7 @@ class user:
             if bluebronzesapling > 0:
                 quantity = remaining_ap_int // 40
                 if quantity == 0:
-                    main.logger.info(f"\n ======================================== \n APが40未満の場合は購入できません (´･ω･`)? \n ======================================== ")
+                    main.logger.info(f"\n ======================================== \n Cannot purchase if AP is less than 40 (´･ω･`)? \n ======================================== ")
                     return
                 
                 if bluebronzesapling < quantity:
@@ -374,7 +374,7 @@ class user:
                             main.logger.info(f"\n========================================\n[+] {purchaseNum}x {purchaseName} 购买成功\n========================================")
                             webhook.shop(purchaseName, purchaseNum)
             else:
-                main.logger.info(f"\n ======================================== \n ＞︿＜ 青銅の苗木が足りないヽ (*。>Д<)o゜ \n ======================================== " )
+                main.logger.info(f"\n ======================================== \n ＞︿＜ Bronze seedlings are not enough. (*。>Д<)o゜ \n ======================================== " )
 
 
     def drawFP(self):
@@ -391,7 +391,7 @@ class user:
         self.builder_.AddParameter('shopIdIndex', '1')
         self.builder_.AddParameter('gachaSubId', gachaSubId)
 
-        main.logger.info(f"\n ======================================== \n [+] 友情卡池ID : {gachaSubId}\n ======================================== " )
+        main.logger.info(f"\n ======================================== \n [+] FP Card Pool ID : {gachaSubId}\n ======================================== " )
         data = self.Post(f'{fgourl.server_addr_}/gacha/draw?_userId={self.user_id_}')
         responses = data['response']
 
@@ -434,11 +434,11 @@ class user:
             f'{fgourl.server_addr_}/present/list?_userId={self.user_id_}')
         
         responses = data['response']
-        main.logger.info(f"\n ======================================== \n [+] 读取礼物盒 \n ======================================== " )
+        main.logger.info(f"\n ======================================== \n [+] Sync the rewards box \n ======================================== " )
 
     def lq002(self):
          # https://game.fate-go.jp/present/receive?
-        with open('login.json', 'r', encoding='utf-8')as f:
+        with open('login.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
 
         present_ids = []
@@ -468,34 +468,24 @@ class user:
     
             responses = data['response']
 
-            main.logger.info(f"\n ======================================== \n [+] 领取成功 \n ======================================== " )
+            main.logger.info(f"\n ======================================== \n [+] Claim Successful \n ======================================== " )
 
     def lq003(self):
-        # https://game.fate-go.jp/shop/purchase
-        
+        # https://game.fate-go.jp/shop/purchase?
+
         url = 'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/JP/master/mstShop.json'
         response = requests.get(url)
 
         fdata = response.json()
         max_base_shop_id = None
         max_base_shop_s_id = None
-        max_base_lim_it_Num = None 
-        max_base_lim_it_s_Num = None 
-        max_base_prices = None
-        max_base_prices_s = None
-        max_base_name_s = '活动'
         num = None
 
         for item in fdata:
             if 4001 in item.get('targetIds', []) and item.get('flag') == 4096:
                 base_shop_id = item.get('baseShopId')
-                base_lim_it_Num = item.get('limitNum')
-                base_prices = item.get('prices')[0]
-                
                 if max_base_shop_id is None or base_shop_id > max_base_shop_id:
                     max_base_shop_id = base_shop_id
-                    max_base_lim_it_Num = base_lim_it_Num
-                    max_base_prices = base_prices
 
         if max_base_shop_id is not None:
             shopId = max_base_shop_id
@@ -512,14 +502,14 @@ class user:
 
             if num_value is not None:
                 shopId = max_base_shop_id
-                num_ok = max_base_lim_it_Num - num_value
+                num_ok = 5 - num_value
                 if num_ok == 0:
-                   main.logger.info(f"\n ======================================== \n 每月呼符 你已经兑换过了(´･ω･`) \n ======================================== ")
+                   main.logger.info(f"\n ======================================== \n Monthly call sign. It has already been exchanged.了(´･ω･`) \n ======================================== ")
                 else:
                     mana = gdata['cache']['replaced']['userGame'][0]['mana']
-                    mana_s = mana // max_base_prices
+                    mana_s = mana // 20
                     if mana_s == 0:
-                       main.logger.info(f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== ")
+                       main.logger.info(f"\n ======================================== \n Insufficient Mana Prisms(´･ω･`) \n ======================================== ")
                     else:
                         if num_ok > mana_s:
                            num = mana_s
@@ -534,13 +524,13 @@ class user:
                 
                         responses = data['response'] 
                         if num is not None:
-                           main.logger.info(f"\n ======================================== \n 已兑换 {num} 呼符 （每月）\n ======================================== ")       
+                           main.logger.info(f"\n ======================================== \n Exchanged {num} call sign (per month)\n ======================================== ")       
             else:
-                num_ok = max_base_lim_it_Num
+                num_ok = 5
                 mana = gdata['cache']['replaced']['userGame'][0]['mana']
-                mana_s = mana // max_base_prices
+                mana_s = mana // 20
                 if mana_s == 0:
-                   main.logger.info(f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== ")
+                   main.logger.info(f"\n ======================================== \n Insufficient Mana Prisms(´･ω･`) \n ======================================== ")
                 else:
                     if num_ok > mana_s:
                        num = mana_s
@@ -554,22 +544,13 @@ class user:
                         f'{fgourl.server_addr_}/shop/purchase?_userId={self.user_id_}') 
                     
                     if num is not None:
-                       main.logger.info(f"\n ======================================== \n 已兑换 {num} 呼符 （每月） \n ======================================== ")
+                       main.logger.info(f"\n ======================================== \n Exchanged {num} call sign (per month) \n ======================================== ")
 
         for item in fdata:
             if 4001 in item.get('targetIds', []) and item.get('flag') == 2048:
                 base_shop_s_id = item.get('baseShopId')
-                base_lim_it_s_Num = item.get('limitNum')
-                base_prices_s = item.get('prices')[0]
-                base_name_s = item.get('detail')
-                match = re.search(r'【(.*?)】', base_name_s)
-                base_name_ss = match.group(1)
-                
                 if max_base_shop_s_id is None or base_shop_s_id > max_base_shop_s_id:
                     max_base_shop_s_id = base_shop_s_id
-                    max_base_lim_it_s_Num = base_lim_it_s_Num
-                    max_base_prices_s = base_prices_s
-                    max_base_name_s = base_name_ss
 
         if max_base_shop_s_id is not None:
             shopId = max_base_shop_s_id
@@ -583,14 +564,14 @@ class user:
                         current_time = response.json()['unixtime']
 
                         if current_time > closedAt:
-                            main.logger.info(f"\n ======================================== \n 目前没有 绿方块活动(´･ω･`) \n ======================================== ")
+                            main.logger.info(f"\n ======================================== \n No Mana Prism activity at this time.(´･ω･`) \n ======================================== ")
                             return
                         else:
                             with open('login.json', 'r', encoding='utf-8') as file:
                                  gdata = json.load(file)
 
                             mana = gdata['cache']['replaced']['userGame'][0]['mana']
-                            mana_s = mana // max_base_prices_s
+                            mana_s = mana // 20
                             num_value = None
 
                             for item in gdata.get('cache', {}).get('updated', {}).get('userShop', []):
@@ -599,13 +580,13 @@ class user:
                                     break
 
                             if num_value is not None:
-                               num_ok = max_base_lim_it_s_Num - num_value
+                               num_ok = 5 - num_value
                                if num_ok == 0:
-                                   main.logger.info(f"\n ======================================== \n {max_base_name_s}呼符 你已经兑换过了(´･ω･`) \n ======================================== ")
+                                   main.logger.info(f"\n ======================================== \n Event call sign You have already exchanged it.\n ======================================== ")
                                    return
                                else:
                                     if mana_s == 0:
-                                       main.logger.info(f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== ")
+                                       main.logger.info(f"\n ======================================== \n Insufficient mana prisms(´･ω･`) \n ======================================== ")
                                     else:
                                         if num_ok > mana_s:
                                            num = mana_s
@@ -618,14 +599,13 @@ class user:
                                     data = self.Post(
                                         f'{fgourl.server_addr_}/shop/purchase?_userId={self.user_id_}') 
                                     if num is not None:
-                                       main.logger.info(f"\n ======================================== \n 已兑换 {num} 呼符 // {max_base_name_s} \n ======================================== ")
+                                       main.logger.info(f"\n ======================================== \n 已兑换 {num} 呼符 （限时活动) \n ======================================== ")
                             else:
-                                 num_ok = max_base_lim_it_s_Num
+                                 num_ok = 5
                                  mana = gdata['cache']['replaced']['userGame'][0]['mana']
-                                 mana_s = mana // max_base_prices_s
-                                
+                                 mana_s = mana // 20
                                  if mana_s == 0:
-                                    main.logger.info(f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== ")
+                                    main.logger.info(f"\n ======================================== \n Insufficient mana prisms(´･ω･`)\n ======================================== ")
                                     return
                                  else:
                                      if num_ok > mana_s:
@@ -639,9 +619,9 @@ class user:
                                      data = self.Post(
                                          f'{fgourl.server_addr_}/shop/purchase?_userId={self.user_id_}') 
                                      if num is not None:
-                                        main.logger.info(f"\n ======================================== \n 已兑换 {num} 呼符 // {max_base_name_s} \n ======================================== ")
+                                        main.logger.info(f"\n ======================================== \n Exchanged {num} call sign (limited time event) \n ======================================== ")
                     else:
-                        main.logger.info(f"时间服务器连接失败")
+                        main.logger.info(f"Time Server Connection Failure")
 
 
 
