@@ -14,7 +14,6 @@ dracula_colors = {
     "orange": 0xFFB86C,
 }
 
-
 def topLogin(
     data: List[Union["user.Rewards", "user.Login", Union["user.Bonus", str]]]
 ) -> None:
@@ -111,7 +110,6 @@ def topLogin(
     response = requests.post(endpoint, json=jsonData, headers=headers)
     print("topLogin response:", response.status_code, response.text)
 
-
 def shop(item: str, quantity: int) -> None:
     endpoint = main.webhook_discord_url
 
@@ -140,7 +138,6 @@ def shop(item: str, quantity: int) -> None:
     headers = {"Content-Type": "application/json"}
     response = requests.post(endpoint, json=jsonData, headers=headers)
     print("shop response:", response.status_code, response.text)
-
 
 def drawFP(servants: list, missions: list) -> None:
     endpoint = main.webhook_discord_url
