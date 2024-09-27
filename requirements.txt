@@ -1,9 +1,13 @@
-json5
-httpx
-lxml
-requests
-py3rijndael
-msgpack
+# coding: utf-8
 coloredlogs
-fake-useragent
+croniter
 cryptography~=42.0.7
+fake-useragent
+fgo-api-types
+httpx
+json5
+lxml
+msgpack
+orjson
+py3rijndael
+requests
