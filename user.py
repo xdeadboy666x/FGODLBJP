@@ -653,7 +653,7 @@ class user:
                         responses = data["response"]
                         if num is not None:
                             main.logger.info(
-                                f"\n ======================================== \n 已兑换 {num} 呼符 （每月）\n ======================================== "
+                                f"\n ======================================== \n Exchanged {num} callsign (monthly)\n ======================================== "
                             )
             else:
                 num_ok = max_base_lim_it_Num
@@ -661,7 +661,9 @@ class user:
                 mana_s = mana // max_base_prices
                 if mana_s == 0:
                     main.logger.info(
-                        f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== "
+                        f"\n ======================================== \n Not
+                        enough mana prisms(´･ω･`) \n
+                        ======================================== "
                     )
                 else:
                     if num_ok > mana_s:
@@ -678,7 +680,9 @@ class user:
 
                     if num is not None:
                         main.logger.info(
-                            f"\n ======================================== \n 已兑换 {num} 呼符 （每月） \n ======================================== "
+                            f"\n ======================================== \n
+                            Redeemed {num} tickets (monthly) \n
+                            ======================================== "
                         )
 
         for item in fdata:
@@ -714,7 +718,9 @@ class user:
 
                         if current_time > closedAt:
                             main.logger.info(
-                                f"\n ======================================== \n 目前没有 绿方块活动(´･ω･`) \n ======================================== "
+                                f"\n ======================================== \n
+                                There is currently no Mana Prism activity (´・ω・`).(´･ω･`)
+                                \n ======================================== "
                             )
                             return
                         else:
@@ -742,13 +748,17 @@ class user:
                                 num_ok = max_base_lim_it_s_Num - num_value
                                 if num_ok == 0:
                                     main.logger.info(
-                                        f"\n ======================================== \n {max_base_name_s}呼符 你已经兑换过了(´･ω･`) \n ======================================== "
+                                        f"\n ======================================== \n {max_base_name_s}Phew, you've already redeemed it (´・ω・`). \n ======================================== "
                                     )
                                     return
                                 else:
                                     if mana_s == 0:
                                         main.logger.info(
-                                            f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== "
+                                            f"\n
+                                            ========================================
+                                            \n Not enough mana prisms(´･ω･`) \n
+                                            ========================================
+                                            "
                                         )
                                     else:
                                         if num_ok > mana_s:
@@ -766,7 +776,12 @@ class user:
                                     )
                                     if num is not None:
                                         main.logger.info(
-                                            f"\n ======================================== \n 已兑换 {num} 呼符 // {max_base_name_s} \n ======================================== "
+                                            f"\n
+                                            ========================================
+                                            \n Exchanged {num} tickets // {max_base_name_s}
+                                            \n
+                                            ========================================
+                                            "
                                         )
                             else:
                                 num_ok = max_base_lim_it_s_Num
@@ -777,7 +792,9 @@ class user:
 
                                 if mana_s == 0:
                                     main.logger.info(
-                                        f"\n ======================================== \n 魔力棱镜不足(´･ω･`) \n ======================================== "
+                                        f"\n
+                                        ========================================
+                                        \n Not enough mana prism                                         (´･ω･`) \n ======================================== "
                                     )
                                     return
                                 else:
@@ -796,7 +813,12 @@ class user:
                                     )
                                     if num is not None:
                                         main.logger.info(
-                                            f"\n ======================================== \n 已兑换 {num} 呼符 // {max_base_name_s} \n ======================================== "
+                                            f"\n
+                                            ========================================
+                                            \n Exchanged {num} tickets. //
+                                            {max_base_name_s}\n
+                                            ========================================
+                                            "
                                         )
                     else:
-                        main.logger.info(f"时间服务器连接失败")
+                        main.logger.info(f"Time Server Connection Failure")
