@@ -35,11 +35,9 @@ jobs:
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/pip
+          path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          restore-keys: ${{ runner.os }}-pip-
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -61,7 +59,7 @@ jobs:
           webhookDiscord: ${{ secrets.DISCORD_WEBHOOK }}
 
 #      - name: Install RAR
-        run: sudo apt-get install rar -y
+#        run: sudo apt-get install rar -y
 
 #      - name: Archive login.json with password
 #        run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
