@@ -61,10 +61,10 @@ jobs:
           webhookDiscord: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Install RAR
-        #run: sudo apt-get install rar -y
+        run: sudo apt-get install rar -y
 
       - name: Archive login.json with password
-        #run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
+        run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
 
       - name: Upload login.rar artifact
         uses: actions/upload-artifact@v4
