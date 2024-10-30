@@ -63,14 +63,14 @@ jobs:
       - name: Install RAR
         run: sudo apt-get install rar -y
 
-      - name: Archive login.json with password
-        run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
+      - name: Archive all workflow results with password
+        run: rar a -hp${{ secrets.RAR_PASSWORD }} results.rar ./*
 
-      - name: Upload login.rar artifact
+      - name: Upload results.rar artifact
         uses: actions/upload-artifact@v4
         with:
-          name: login-rar
-          path: login.rar
+          name: workflow-results
+          path: results.rar
 
   keepalive:
     runs-on: ubuntu-latest
