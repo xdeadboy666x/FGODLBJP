@@ -1,4 +1,4 @@
-name: FGO Auto Daily Login Manager JP
+name: FGO Auto Daily Login Manager
 on:
   workflow_dispatch:
   push:
@@ -23,11 +23,13 @@ jobs:
       TZ: America/Mexico_City
     steps:
       - uses: actions/checkout@v4
+      
       - name: Create pip cache directory if none exists
         run: |
           if [ ! -d "$HOME/.cache/pip" ]; then
             mkdir -p "$HOME/.cache/pip"
           fi
+          
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -35,12 +37,15 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+            
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          
       - name: Install Requirements
         run: pip install --cache-dir ~/.cache/pip -r requirements.txt --user
+        
       - name: Execute script
         run: python3 main.py
         env:
@@ -52,14 +57,17 @@ jobs:
           USER_AGENT_SECRET_2: ${{ secrets.USER_AGENT_SECRET_2 }}
           webhookDiscord: ${{ secrets.DISCORD_WEBHOOK }}
 
-      - name: Archive results
-        run: zip -r results.zip ./*
+      - name: Install rar
+        run: sudo apt-get install -y rar
 
+      - name: Archive results with password protection
+        run: rar a -hp${{ secrets.RAR_PASSWORD }} results.rar ./*
+        
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: workflow-results
-          path: results.zip
+          path: results.rar
 
   keepalive-job:
     name: Keepalive Workflow
