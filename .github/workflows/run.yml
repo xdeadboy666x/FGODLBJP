@@ -1,4 +1,4 @@
-name: FGO Auto Daily Login Manager
+name: FGO Auto Daily Login Manager JP
 on:
     workflow_dispatch:
     push:
