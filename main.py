@@ -25,7 +25,7 @@ coloredlogs.install(fmt="%(asctime)s %(name)s %(levelname)s %(message)s")
 
 def get_latest_verCode():
     endpoint = (
-        "https://raw.githubusercontent.com/DNNDHH/FGO-VerCode-extractor/JP/VerCode.json"
+        "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/JP/VerCode.json"
     )
     response = requests.get(endpoint).text
     response_data = json.loads(response)
