@@ -1,8 +1,7 @@
 import main
 import requests
-import json
 import user
-from typing import List, Union
+import json
 
 # Define Dracula color palette
 dracula_colors = {
@@ -14,17 +13,15 @@ dracula_colors = {
     "orange": 0xFFB86C,
 }
 
-def topLogin(
-    data: List[Union["user.Rewards", "user.Login", Union["user.Bonus", str]]],
-) -> None:
+def topLogin(data: list) -> None:
     endpoint = main.webhook_discord_url
 
-    rewards: "user.Rewards" = data[0]
-    login: "user.Login" = data[1]
-    bonus: Union["user.Bonus", str] = data[2]
-
+    rewards: user.Rewards = data[0]
+    login: user.Login = data[1]
+    bonus: user.Bonus or str = data[2]
     with open("login.json", "r", encoding="utf-8") as f:
         data22 = json.load(f)
+
         name1 = data22["cache"]["replaced"]["userGame"][0]["name"]
         fpids1 = data22["cache"]["replaced"]["userGame"][0]["friendCode"]
 
@@ -110,10 +107,11 @@ def topLogin(
     }
 
     headers = {"Content-Type": "application/json"}
+
     response = requests.post(endpoint, json=jsonData, headers=headers)
     print("topLogin response:", response.status_code, response.text)
 
-def shop(item: str, quantity: int) -> None:
+def shop(item: str, quantity: str) -> None:
     endpoint = main.webhook_discord_url
 
     jsonData = {
@@ -135,10 +133,11 @@ def shop(item: str, quantity: int) -> None:
     }
 
     headers = {"Content-Type": "application/json"}
+
     response = requests.post(endpoint, json=jsonData, headers=headers)
     print("shop response:", response.status_code, response.text)
 
-def drawFP(servants: list, missions: list) -> None:
+def drawFP(servants, missions) -> None:
     endpoint = main.webhook_discord_url
 
     message_mission = ""
@@ -146,15 +145,18 @@ def drawFP(servants: list, missions: list) -> None:
 
     if len(servants) > 0:
         servants_atlas = requests.get(
-            "https://api.atlasacademy.io/export/JP/basic_svt_lang_en.json"
+            f"https://api.atlasacademy.io/export/JP/basic_svt_lang_en.json"
         ).json()
 
         svt_dict = {svt["id"]: svt for svt in servants_atlas}
 
         for servant in servants:
-            svt = svt_dict.get(servant.objectId, None)
-            if svt:
+            objectId = servant.objectId
+            if objectId in svt_dict:
+                svt = svt_dict[objectId]
                 message_servant += f"`{svt['name']}` "
+            else:
+                continue
 
     if len(missions) > 0:
         for mission in missions:
@@ -181,5 +183,79 @@ def drawFP(servants: list, missions: list) -> None:
     }
 
     headers = {"Content-Type": "application/json"}
+
     response = requests.post(endpoint, json=jsonData, headers=headers)
-    print("drawFP response:", response.status_code, response.text)
+    print("drawFP response:", response.status_code, response.text
+
+
+def LTO_Gacha(servants) -> None:
+    endpoint = main.webhook_discord_url
+
+    message_servant = ""
+
+    if len(servants) > 0:
+        servants_atlas = requests.get(
+            f"https://api.atlasacademy.io/export/JP/basic_svt_lang_en.json"
+        ).json()
+
+        svt_dict = {svt["id"]: svt for svt in servants_atlas}
+
+        for servant in servants:
+            objectId = servant.objectId
+            if objectId in svt_dict:
+                svt = svt_dict[objectId]
+                message_servant += f"`{svt['name']}` "
+            else:
+                continue
+
+    jsonData = {
+        "content": None,
+        "embeds": [
+            {
+                "title": "FP Summoning - " + main.fate_region,
+                "description": f"FP Summoning Gacha",
+                "color": 16711680,
+                "fields": [
+                    {"name": "Limited Cards", "value": f"{message_servant}", "inline": False}
+                ],
+                "thumbnail": {
+                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara02_rv.png"
+                },
+            }
+        ],
+        "attachments": [],
+    }
+
+    headers = {"Content-Type": "application/json"}
+
+    requests.post(endpoint, json=jsonData, headers=headers)
+
+
+def Present(name, namegift, object_id_count) -> None:
+    endpoint = main.webhook_discord_url
+
+    jsonData = {
+        "content": None,
+        "embeds": [
+            {
+                "title": "FGO兑换系统 - JP",
+                "description": "兑换成功",
+                "color": 8388736,
+                "fields": [
+                    {
+                        "name": f"{name}",
+                        "value": f"{namegift} x{object_id_count}",
+                        "inline": False,
+                    }
+                ],
+                "thumbnail": {
+                    "url": "https://www.fate-go.jp/manga_fgo2/images/commnet_chara06.png"
+                },
+            }
+        ],
+        "attachments": [],
+    }
+
+    headers = {"Content-Type": "application/json"}
+
+    requests.post(endpoint, json=jsonData, headers=headers)
