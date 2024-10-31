@@ -1,11 +1,11 @@
 import requests
 import json
+import main
 
 from mytime import GetTimeStamp
 
 
-# Get Friend Summon Gacha Sub Id
-def GetGachaSubIdFP(region):
+def GetGachaSubIdFP():
     response = requests.get(
         f"https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/JP/master/mstGachaSub.json"
     )
@@ -13,13 +13,23 @@ def GetGachaSubIdFP(region):
     timeNow = GetTimeStamp()
     priority = 0
     goodGacha = {}
+
     for gacha in gachaList:
         openedAt = gacha["openedAt"]
         closedAt = gacha["closedAt"]
 
-        if openedAt <= timeNow & timeNow <= closedAt:
+        if openedAt <= timeNow and timeNow <= closedAt:
             p = int(gacha["priority"])
             if p > priority:
                 priority = p
                 goodGacha = gacha
-            return str(goodGacha["id"])
+
+    if not goodGacha:
+        main.logger.info("No suitable gacha found")
+        return None
+
+    if "id" not in goodGacha:
+        main.logger.info("Key 'id' not found in the selected gacha")
+        return None
+
+    return str(goodGacha["id"])
