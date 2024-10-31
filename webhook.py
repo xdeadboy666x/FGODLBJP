@@ -185,7 +185,7 @@ def drawFP(servants, missions) -> None:
     headers = {"Content-Type": "application/json"}
 
     response = requests.post(endpoint, json=jsonData, headers=headers)
-    print("drawFP response:", response.status_code, response.text
+    print("drawFP response:", response.status_code, response.text)
 
 
 def LTO_Gacha(servants) -> None:
