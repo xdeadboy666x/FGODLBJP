@@ -14,7 +14,7 @@ import os
 import subprocess
 import re
 import sys
-import binasci)i
+import binascii
 import random
 import time
 import requests            
