@@ -14,7 +14,7 @@ import os
 import subprocess
 import re
 import sys
-import binascii
+import binasci)i
 import random
 import time
 import requests            
@@ -453,7 +453,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         if nowAt > closedAt:
             main.logger.info(
                 f"\n {'=' * 40} \n [+] Limited Event Summoning ended, current time：{nowAt} \n {'=' * 40} "
-
+                )
             return
 
         with open("login.json", "r", encoding="utf-8") as file:
