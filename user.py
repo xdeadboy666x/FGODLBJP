@@ -17,7 +17,7 @@ import sys
 import binascii
 import random
 import time
-import requests            
+import requests
 import shutil
 
 from cryptography.hazmat.primitives import serialization
@@ -632,7 +632,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
             responses = data["response"]
 
-            main.logger.info(f"\n {'=' * 40} \n [+] 领取成功 \n {'=' * 40} ")
+            main.logger.info(f"\n {'=' * 40} \n [+] Received \n {'=' * 40} ")
 
     def lq003(self):
         # https://game.fate-go.jp/shop/purchase
