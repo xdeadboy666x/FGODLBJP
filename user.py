@@ -453,7 +453,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         if nowAt > closedAt:
             main.logger.info(
                 f"\n {'=' * 40} \n [+] Limited Event Summoning ended, current time：{nowAt} \n {'=' * 40} "
-                )
+            )
             return
 
         with open("login.json", "r", encoding="utf-8") as file:
@@ -468,9 +468,11 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
             if svtId in [2300800, 2300700]:  # SvtID of Kishiwami Shirano
                 found_svt = True
 
-                gachaId = 3  # Limited Gacha has two ID【 2 / 3 】懒得写判定，如果报错就用2
-                gachaSubId = 417  #T his limited card pool has two IDs [416 / 417], so I'm too lazy to write the judgment, and if I get an error, I'll just use 416.
-  
+                gachaId = (
+                    3  # Limited Gacha has two ID【 2 / 3 】懒得写判定，如果报错就用2
+                )
+                gachaSubId = 417  # T his limited card pool has two IDs [416 / 417], so I'm too lazy to write the judgment, and if I get an error, I'll just use 416.
+
                 self.builder_.AddParameter("storyAdjustIds", "[]")
                 self.builder_.AddParameter("selectBonusList", "")
                 self.builder_.AddParameter("gachaId", str(gachaId))
@@ -573,7 +575,9 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         with open("present.json", "w", encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
 
-        main.logger.info(f"\n {'=' * 40} \n [+] Getting Present Box Data \n {'=' * 40} ")
+        main.logger.info(
+            f"\n {'=' * 40} \n [+] Getting Present Box Data \n {'=' * 40} "
+        )
 
     def lq002(self):
         # https://game.fate-go.jp/present/receive?
@@ -948,4 +952,3 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
             main.logger.info(
                 f"\n {'=' * 40} \n [+] No exchange coupon in the gift box(´･ω･`) \n {'=' * 40} "
             )
-
