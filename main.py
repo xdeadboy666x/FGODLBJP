@@ -16,7 +16,7 @@ user_agent_2 = os.environ.get("USER_AGENT_SECRET_2")
 fate_region = "JP"
 
 userNums = len(userIds)
-authKeyNums = len(authKeys)
+authKeyNums = len(authKeys)                                                                                                                            
 secretKeyNums = len(secretKeys)
 
 logger = logging.getLogger("FGO Daily Login")
@@ -32,23 +32,23 @@ def get_latest_verCode():
 
 
 def get_latest_appver():
-    endpoint = (
-        "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/JP/VerCode.json"
-    )
+    endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/JP/VerCode.json"                                            
     response = requests.get(endpoint).text
     response_data = json.loads(response)
 
     return response_data["appVer"]
 
 
-def main():
+def main():                                                                                                                                            
     if userNums == authKeyNums and userNums == secretKeyNums:
         fgourl.set_latest_assets()
         for i in range(userNums):
             try:
                 instance = user.user(userIds[i], authKeys[i], secretKeys[i])
                 time.sleep(1)
-                logger.info(f"\n {'=' * 40} \n [+] sign in to your account \n {'=' * 40} ")
+                logger.info(
+                    f"\n {'=' * 40} \n [+] sign in to your account \n {'=' * 40} "
+                )
                 instance.topLogin()
                 time.sleep(2)
                 instance.topHome()
