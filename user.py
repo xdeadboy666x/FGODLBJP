@@ -919,9 +919,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
                     main.logger.info(
     f"\n {'=' * 40} \n [+] {name} successfully redeemed \n {'=' * 40} "
-)
                     )
-
                     webhook.Present(name, namegift, object_id_count)
 
         else:
