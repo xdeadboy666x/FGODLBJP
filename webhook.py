@@ -237,12 +237,13 @@ def Present(name, namegift, object_id_count) -> None:
             }
         ],
         "attachments": [],
+    	
     }
-    
+
     headers = {"Content-Type": "application/json"}
     
     try:
-    	response = requests.post(endpoint, json=jsonData, headers=headers)
+        response = requests.post(endpoint, json=jsonData, headers=headers)
         response.raise_for_status()
         print("Present response:", response.status_code, response.text)
     except requests.exceptions.RequestException as e:
