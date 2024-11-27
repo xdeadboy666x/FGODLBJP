@@ -281,3 +281,4 @@ def Present(name: str, namegift: str, object_id_count: int) -> None:
         print("Present response:", response.status_code, response.text)
     except requests.exceptions.RequestException as e:
         print("Request failed:", e)
+        
