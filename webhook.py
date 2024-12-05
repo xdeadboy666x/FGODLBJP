@@ -1,180 +1,307 @@
-import requests
-import json
 import main
+import requests
 import user
+import json
 
-# Dracula Color Palette
-DRACULA_COLORS = {
-    "purple": 0xBD93F9,
-    "pink": 0xFF79C6,
-    "cyan": 0x8BE9FD,
-    "green": 0x50FA7B,
-    "yellow": 0xF1FA8C,
-    "orange": 0xFFB86C,
-}
 
-def send_discord_message(endpoint: str, payload: dict) -> None:
-    """Send a POST request to the Discord webhook."""
-    headers = {"Content-Type": "application/json"}
-    try:
-        response = requests.post(endpoint, json=payload, headers=headers)
-        response.raise_for_status()
-        print(f"Message sent successfully: {response.status_code}")
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
-
-def top_login(data: list) -> None:
-    """Handles top login data and sends results to Discord."""
+def topLogin(data: list) -> None:
     endpoint = main.webhook_discord_url
+
     rewards: user.Rewards = data[0]
     login: user.Login = data[1]
-    bonus = data[2]
+    bonus: user.Bonus or str = data[2]
+    with open('login.json', 'r', encoding='utf-8')as f:
+        data22 = json.load(f)
 
-    # Load user data from JSON
-    with open("login.json", "r", encoding="utf-8") as f:
-        login_data = json.load(f)
-        user_info = login_data["cache"]["replaced"]["userGame"][0]
-        name1 = user_info.get("name", "Unknown")
-        fpids1 = user_info.get("friendCode", "N/A")
+        name1 = data22['cache']['replaced']['userGame'][0]['name']
+        fpids1 = data22['cache']['replaced']['userGame'][0]['friendCode']
 
-    # Prepare bonus message
-    message_bonus = ""
-    nl = "\n"
+    messageBonus = ''
+    nl = '\n'
+
     if bonus != "No Bonus":
-        message_bonus += f"__{bonus.message}__{nl}```{nl.join(bonus.items)}```"
-        if bonus.bonus_name:
-            message_bonus += f"{nl}__{bonus.bonus_name}__{nl}{bonus.bonus_detail}{nl}```{nl.join(bonus.bonus_camp_items)}```"
+        messageBonus += f"__{bonus.message}__{nl}```{nl.join(bonus.items)}```"
 
-    # Build the Discord message payload
-    payload = {
+        if bonus.bonus_name != None:
+            messageBonus += f"{nl}__{bonus.bonus_name}__{nl}{bonus.bonus_detail}{nl}```{nl.join(bonus.bonus_camp_items)}```"
+
+        messageBonus += "\n"
+
+    jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": f"Fate/Grand Order Login Manager - {main.fate_region}",
-                "description": f"Sign in success.\n\n{message_bonus}",
-                "color": DRACULA_COLORS["pink"],
-                "fields": [
-                    {"name": "Master", "value": name1, "inline": True},
-                    {"name": "Friend ID", "value": fpids1, "inline": True},
-                    {"name": "Lvl.", "value": str(rewards.level), "inline": True},
-                    {"name": "Summoning Tickets", "value": str(rewards.ticket), "inline": True},
-                    {"name": "Saint Quartz", "value": str(rewards.stone), "inline": True},
-                ],
-                "thumbnail": {
-                    "url": "https://static.atlasacademy.io/JP/External/FGOPoker/314.png"
-                },
-            }
-        ],
-    }
-
-    send_discord_message(endpoint, payload)
-
-def shop(item: str, quantity: int) -> None:
-    """Logs shop activity to Discord."""
-    endpoint = main.webhook_discord_url
-    payload = {
-        "content": None,
-        "embeds": [
-            {
-                "title": f"Fate/Grand Order Shop Manager - {main.fate_region}",
-                "description": "",
-                "color": DRACULA_COLORS["cyan"],
+                "title": "FGO登录系统 - " + main.fate_region,
+                "description": f"登录成功。列出角色信息.\n\n{messageBonus}",
+                "color": 563455,
                 "fields": [
                     {
-                        "name": "Da Vinci's Workshop",
-                        "value": f"Used {40 * quantity} AP on x{quantity} {item}",
-                        "inline": False,
+                        "name": "御主名",
+                        "value": f"{name1}",
+                        "inline": True
+                    },
+                    {
+                        "name": "朋友ID",
+                        "value": f"{fpids1}",
+                        "inline": True
+                    },
+                    {
+                        "name": "等级",
+                        "value": f"{rewards.level}",
+                        "inline": True
+                    },
+                    {
+                        "name": "呼符", 
+                        "value": f"{rewards.ticket}",
+                        "inline": True
+                    },                    
+                    {
+                        "name": "圣晶石",
+                        "value": f"{rewards.stone}",
+                        "inline": True
+                    },
+                    {
+                        "name": "圣晶片",
+                        "value": f"{rewards.sqf01}",
+                        "inline": True
+                    },
+                    {
+                        "name": "金苹果",
+                        "value": f"{rewards.goldenfruit}",
+                        "inline": True
+                    },
+                    {
+                        "name": "银苹果",
+                        "value": f"{rewards.silverfruit}",
+                        "inline": True
+                    },
+                    {
+                        "name": "铜苹果",
+                        "value": f"{rewards.bronzefruit}",
+                        "inline": True
+                    },
+                    {
+                        "name": "蓝苹果",
+                        "value": f"{rewards.bluebronzefruit}",
+                        "inline": True
+                    },
+                    {
+                        "name": "蓝苹果树苗",
+                        "value": f"{rewards.bluebronzesapling}",
+                        "inline": True
+                    },
+                    {
+                        "name": "连续登录天数",
+                        "value": f"{login.login_days}",
+                        "inline": True
+                    },
+                    {
+                        "name": "累计登录天数",
+                        "value": f"{login.total_days}",
+                        "inline": True
+                    },
+                    {
+                        "name": "白方块",
+                        "value": f"{rewards.pureprism}",
+                        "inline": True
+                    },
+                    {
+                        "name": "友情点",
+                        "value": f"{login.total_fp}",
+                        "inline": True
+                    },
+                    {
+                        "name": "今天 获得的友情点",
+                        "value": f"+{login.add_fp}",
+                        "inline": True
+                    },
+                    {
+                        "name": "当前AP",
+                        "value": f"{login.remaining_ap}",
+                        "inline": True
+                    },
+                    {
+                        "name": "圣杯",
+                        "value": f"{rewards.holygrail}",
+                        "inline": True
+                    },
+
+                ],
+                "thumbnail": {
+                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara01.png"
+                }
+            }
+        ],
+        "attachments": []
+    }
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    requests.post(endpoint, json=jsonData, headers=headers)
+
+
+def shop(item: str, quantity: str) -> None:
+    endpoint = main.webhook_discord_url
+
+    jsonData = {
+        "content": None,
+        "embeds": [
+            {
+                "title": "FGO自动购物系统 - " + main.fate_region,
+                "description": f"购买成功.",
+                "color": 5814783,
+                "fields": [
+                    {
+                        "name": f"商店",
+                        "value": f"消费 {40 * quantity}Ap 购买 {quantity}x {item}",
+                        "inline": False
                     }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara10.png"
-                },
+                    "url": "https://www.fate-go.jp/manga_fgo2/images/commnet_chara10.png"
+                }
             }
         ],
+        "attachments": []
     }
-    send_discord_message(endpoint, payload)
 
-def drawFP(results: list) -> None:
-    """Logs gacha results to Discord."""
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    requests.post(endpoint, json=jsonData, headers=headers)
+
+
+def drawFP(servants, missions) -> None:
     endpoint = main.webhook_discord_url
-    payload = {
+
+    message_mission = ""
+    message_servant = ""
+
+    if (len(servants) > 0):
+        servants_atlas = requests.get(
+            f"https://api.atlasacademy.io/export/JP/basic_svt.json").json()
+
+        svt_dict = {svt["id"]: svt for svt in servants_atlas}
+
+        for servant in servants:
+            objectId = servant.objectId
+            if objectId in svt_dict:
+                svt = svt_dict[objectId]
+                message_servant += f"`{svt['name']}` "
+            else:
+                continue
+
+    if(len(missions) > 0):
+        for mission in missions:
+            message_mission += f"__{mission.message}__\n{mission.progressTo}/{mission.condition}\n"
+
+    jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": f"Fate/Grand Order Gacha Results - {main.fate_region}",
-                "description": "Gacha draw complete.",
-                "color": DRACULA_COLORS["green"],
+                "title": "FGO自动抽卡系统 - " + main.fate_region,
+                "description": f"完成当日免费友情抽卡。列出抽卡结果.\n\n{message_mission}",
+                "color": 5750876,
                 "fields": [
-                    {"name": "Servants", "value": "\n".join(results["servants"]), "inline": False},
-                    {"name": "Craft Essences", "value": "\n".join(results["craft_essences"]), "inline": False},
+                    {
+                        "name": "友情卡池",
+                        "value": f"{message_servant}",
+                        "inline": False
+                    }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/assets/img/contents/gacha.png"
-                },
+                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara02_rv.png"
+                }
             }
         ],
+        "attachments": []
     }
-    send_discord_message(endpoint, payload)
 
-def LTO_Gacha(results: list) -> None:
-    """Logs limited-time gacha results to Discord."""
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    requests.post(endpoint, json=jsonData, headers=headers)
+
+
+def LTO_Gacha(servants) -> None:
     endpoint = main.webhook_discord_url
-    payload = {
+
+    message_servant = ""
+
+    if (len(servants) > 0):
+        servants_atlas = requests.get(
+            f"https://api.atlasacademy.io/export/JP/basic_svt.json").json()
+
+        svt_dict = {svt["id"]: svt for svt in servants_atlas}
+
+        for servant in servants:
+            objectId = servant.objectId
+            if objectId in svt_dict:
+                svt = svt_dict[objectId]
+                message_servant += f"`{svt['name']}` "
+            else:
+                continue
+
+    jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": f"Fate/Grand Order Limited-Time Gacha Results - {main.fate_region}",
-                "description": "Limited-time gacha draw.",
-                "color": DRACULA_COLORS["orange"],
+                "title": "FGO限定抽卡 - " + main.fate_region,
+                "description": f"完成限定友情抽卡。列出抽卡结果.",
+                "color": 16711680,
                 "fields": [
-                    {"name": "Servants", "value": "\n".join(results["servants"]), "inline": False},
-                    {"name": "Craft Essences", "value": "\n".join(results["craft_essences"]), "inline": False},
-                    {"name": "Bonus", "value": results["bonus"], "inline": False},
+                    {
+                        "name": "限定卡池",
+                        "value": f"{message_servant}",
+                        "inline": False
+                    }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/assets/img/lto_gacha.png"
-                },
+                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara02_rv.png"
+                }
             }
         ],
+        "attachments": []
     }
-    send_discord_message(endpoint, payload)
 
-def Present(gifts: list) -> None:
-    """Logs presents and items received to Discord."""
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    requests.post(endpoint, json=jsonData, headers=headers)
+
+
+def Present(name, namegift, object_id_count) -> None:
     endpoint = main.webhook_discord_url
-    payload = {
+
+    jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": f"Fate/Grand Order Present Box - {main.fate_region}",
-                "description": "You have received gifts!",
-                "color": DRACULA_COLORS["yellow"],
+                "title": "FGO兑换系统 - JP",
+                "description": "兑换成功",
+                "color": 8388736,
                 "fields": [
-                    {"name": "Gifts Received", "value": "\n".join(gifts), "inline": False},
+                    {
+                        "name": f"{name}",
+                        "value": f"{namegift} x{object_id_count}",
+                        "inline": False
+                    }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/assets/img/presents.png"
-                },
+                    "url": "https://www.fate-go.jp/manga_fgo2/images/commnet_chara06.png"
+                }
             }
         ],
+        "attachments": []
     }
-    send_discord_message(endpoint, payload)
 
-def handle_shop_activity(item: str, quantity: int) -> None:
-    """Handle shop-related activities."""
-    shop(item, quantity)
-    print(f"Logged {quantity} {item} purchase.")
+    headers = {
+        "Content-Type": "application/json"
+    }
 
-def handle_gacha_draw(servants: list, craft_essences: list) -> None:
-    """Handle gacha draw activities."""
-    results = {"servants": servants, "craft_essences": craft_essences}
-    drawFP(results)
-
-def handle_lto_gacha_draw(servants: list, craft_essences: list, bonus: str) -> None:
-    """Handle limited-time gacha draw activities."""
-    results = {"servants": servants, "craft_essences": craft_essences, "bonus": bonus}
-    LTO_Gacha(results)
-
-def handle_present_box(gifts: list) -> None:
-    """Handle presents and gifts received."""
-    Present(gifts)
+    requests.post(endpoint, json=jsonData, headers=headers)
