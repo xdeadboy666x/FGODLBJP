@@ -144,7 +144,7 @@ class user:
     def topLogin(self):
         DataWebhook = []  
         device_info = os.environ.get('DEVICE_INFO_SECRET')
-        appCheck = os.environ.get('appCheckErrorMessage_SECRET')
+        appCheck = os.environ.get('APP_CHECK_SECRET')
         
         private_key_pem = """
 -----BEGIN RSA PRIVATE KEY-----
