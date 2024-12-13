@@ -1,5 +1,5 @@
-#name: FGO Auto Daily Login Manager JP
-on:
+name: FGO Auto Daily Login Manager JP
+#on:
   workflow_dispatch:
   push:
     branches:
