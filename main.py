@@ -32,7 +32,7 @@ def get_latest_verCode():
     
 def get_latest_appver():
     endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/JP/VerCode.json"
-    response = requests.get(endpoint).text
+    response = 
     response_data = json.loads(response)
 
     return response_data['appVer']
@@ -45,7 +45,7 @@ def main():
             try:
                 instance = user.user(userIds[i], authKeys[i], secretKeys[i])
                 time.sleep(1)
-                logger.info(f"\n {'=' * 40} \n [+] 登录账号 \n {'=' * 40} " )
+                logger.info(f"\n {'=' * 40} \n [+] Signed in \n {'=' * 40} " )
                 instance.topLogin()
                 time.sleep(2)
                 instance.topHome()
