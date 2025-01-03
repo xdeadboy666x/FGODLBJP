@@ -9,4 +9,3 @@ class EventMission:
 class gachaInfoServant:
     def __init__(self, objectId):
         self.objectId = objectId
-
