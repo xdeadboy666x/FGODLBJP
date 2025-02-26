@@ -6,4 +6,4 @@ py3rijndael
 msgpack
 coloredlogs
 fake-useragent
-cryptography~=44.0.0
+cryptography~=42.0.7
