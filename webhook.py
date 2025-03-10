@@ -3,16 +3,26 @@ import requests
 import user
 import json
 
+# Define Dracula color palette
+dracula_colors = {
+    "purple": 0xBD93F9,
+    "pink": 0xFF79C6,
+    "cyan": 0x8BE9FD,
+    "green": 0x50FA7B,
+    "yellow": 0xF1FA8C,
+    "orange": 0xFFB86C,
+}
+
 
 def topLogin(data: list) -> None:
     endpoint = main.webhook_discord_url
 
     rewards: user.Rewards = data[0]
     login: user.Login = data[1]
-    bonus: user.Bonus or str = data[2]
+    bonus: user.Bonus | str = data[2]
+
     with open("login.json", "r", encoding="utf-8") as f:
         data22 = json.load(f)
-
         name1 = data22["cache"]["replaced"]["userGame"][0]["name"]
         fpids1 = data22["cache"]["replaced"]["userGame"][0]["friendCode"]
 
@@ -21,81 +31,71 @@ def topLogin(data: list) -> None:
 
     if bonus != "No Bonus":
         messageBonus += f"__{bonus.message}__{nl}```{nl.join(bonus.items)}```"
-
-        if bonus.bonus_name is not None:
+        if bonus.bonus_name:
             messageBonus += f"{nl}__{bonus.bonus_name}__{nl}{bonus.bonus_detail}{nl}```{nl.join(bonus.bonus_camp_items)}```"
-
         messageBonus += "\n"
 
     jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": "FGO登录系统 - " + main.fate_region,
-                "description": f"登录成功。列出角色信息.\n\n{messageBonus}",
-                "color": 563455,
+                "title": f"Fate/Grand Order Daily Login Manager - {main.fate_region}",
+                "description": f"Login success.\n\n{messageBonus}",
+                "color": dracula_colors["pink"],
                 "fields": [
-                    {"name": "御主名", "value": f"{name1}", "inline": True},
-                    {"name": "朋友ID", "value": f"{fpids1}", "inline": True},
-                    {"name": "等级", "value": f"{rewards.level}", "inline": True},
-                    {"name": "呼符", "value": f"{rewards.ticket}", "inline": True},
-                    {"name": "圣晶石", "value": f"{rewards.stone}", "inline": True},
-                    {"name": "圣晶片", "value": f"{rewards.sqf01}", "inline": True},
+                    {"name": "Master", "value": f"{name1}", "inline": True},
+                    {"name": "ID", "value": f"{fpids1}", "inline": True},
+                    {"name": "Level", "value": f"{rewards.level}", "inline": True},
                     {
-                        "name": "金苹果",
-                        "value": f"{rewards.goldenfruit}",
+                        "name": "Summon Ticket",
+                        "value": f"{rewards.ticket}",
                         "inline": True,
                     },
                     {
-                        "name": "银苹果",
-                        "value": f"{rewards.silverfruit}",
+                        "name": "Saint Quartz",
+                        "value": f"{rewards.stone}",
                         "inline": True,
                     },
                     {
-                        "name": "铜苹果",
-                        "value": f"{rewards.bronzefruit}",
+                        "name": "Saint Quartz Fragment",
+                        "value": f"{rewards.sqf01}",
                         "inline": True,
                     },
                     {
-                        "name": "蓝苹果",
-                        "value": f"{rewards.bluebronzefruit}",
+                        "name": "Fruit",
+                        "value": f"Golden: {rewards.goldenfruit}\nSilver: {rewards.silverfruit}\nBronze: {rewards.bronzefruit}\nBronzed Cobalt: {rewards.bluebronzefruit}",
                         "inline": True,
                     },
                     {
-                        "name": "蓝苹果树苗",
+                        "name": "Bronze Sapling",
                         "value": f"{rewards.bluebronzesapling}",
                         "inline": True,
                     },
                     {
-                        "name": "连续登录天数",
-                        "value": f"{login.login_days}",
+                        "name": "Consecutive / Total Logins",
+                        "value": f"{login.login_days} days / {login.total_days} days",
                         "inline": True,
                     },
                     {
-                        "name": "累计登录天数",
-                        "value": f"{login.total_days}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "白方块",
+                        "name": "Pure Prism",
                         "value": f"{rewards.pureprism}",
                         "inline": True,
                     },
-                    {"name": "友情点", "value": f"{login.total_fp}", "inline": True},
+                    {"name": "FP", "value": f"{login.total_fp}", "inline": True},
+                    {"name": "Gained FP", "value": f"+{login.add_fp}", "inline": True},
                     {
-                        "name": "今天 获得的友情点",
-                        "value": f"+{login.add_fp}",
-                        "inline": True,
-                    },
-                    {
-                        "name": "当前AP",
+                        "name": "Current AP",
                         "value": f"{login.remaining_ap}",
                         "inline": True,
                     },
-                    {"name": "圣杯", "value": f"{rewards.holygrail}", "inline": True},
+                    {
+                        "name": "Holy Grail",
+                        "value": f"{rewards.holygrail}",
+                        "inline": True,
+                    },
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara01.png"
+                    "url": "https://static.atlasacademy.io/JP/External/FGOPoker/314.png"
                 },
             }
         ],
@@ -104,28 +104,33 @@ def topLogin(data: list) -> None:
 
     headers = {"Content-Type": "application/json"}
 
-    requests.post(endpoint, json=jsonData, headers=headers)
-
+    try:
+        response = requests.post(endpoint, json=jsonData, headers=headers)
+        response.raise_for_status()
+        print("topLogin response:", response.status_code, response.text)
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
 
 def shop(item: str, quantity: str) -> None:
+#def shop(item: str, quantity: int) -> None:
     endpoint = main.webhook_discord_url
 
     jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": "FGO自动购物系统 - " + main.fate_region,
-                "description": "购买成功.",
-                "color": 5814783,
+                "title": f"Fate/Grand Order Shop Manager - {main.fate_region}",
+                "description": "",
+                "color": dracula_colors["cyan"],
                 "fields": [
                     {
-                        "name": "商店",
-                        "value": f"消费 {40 * quantity}Ap 购买 {quantity}x {item}",
+                        "name": "Da Vinci's Workshop",
+                        "value": f"Used {40 * quantity} AP on x{quantity} {item}",
                         "inline": False,
                     }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo2/images/commnet_chara10.png"
+                    "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara10.png"
                 },
             }
         ],
@@ -134,7 +139,12 @@ def shop(item: str, quantity: str) -> None:
 
     headers = {"Content-Type": "application/json"}
 
-    requests.post(endpoint, json=jsonData, headers=headers)
+    try:
+        response = requests.post(endpoint, json=jsonData, headers=headers)
+        response.raise_for_status()
+        print("shop response:", response.status_code, response.text)
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
 
 
 def drawFP(servants, missions) -> None:
@@ -143,11 +153,10 @@ def drawFP(servants, missions) -> None:
     message_mission = ""
     message_servant = ""
 
-    if len(servants) > 0:
+    if servants:
         servants_atlas = requests.get(
-            "https://api.atlasacademy.io/export/JP/basic_svt.lang_en.json"
+            "https://api.atlasacademy.io/export/JP/basic_svt_lang_en.json"
         ).json()
-
         svt_dict = {svt["id"]: svt for svt in servants_atlas}
 
         for servant in servants:
@@ -155,10 +164,8 @@ def drawFP(servants, missions) -> None:
             if objectId in svt_dict:
                 svt = svt_dict[objectId]
                 message_servant += f"`{svt['name']}` "
-            else:
-                continue
 
-    if len(missions) > 0:
+    if missions:
         for mission in missions:
             message_mission += (
                 f"__{mission.message}__\n{mission.progressTo}/{mission.condition}\n"
@@ -168,18 +175,18 @@ def drawFP(servants, missions) -> None:
         "content": None,
         "embeds": [
             {
-                "title": "FGO自动抽卡系统 - " + main.fate_region,
-                "description": f"完成当日免费友情抽卡。列出抽卡结果.\n\n{message_mission}",
-                "color": 5750876,
+                "title": f"Fate/Grand Order FP Summon Manager - {main.fate_region}",
+                "description": message_mission,
+                "color": dracula_colors["green"],
                 "fields": [
                     {
-                        "name": "友情卡池",
-                        "value": f"{message_servant}",
+                        "name": "FP Gacha results",
+                        "value": message_servant,
                         "inline": False,
                     }
                 ],
                 "thumbnail": {
-                    "url": "https://www.fate-go.jp/manga_fgo/images/commnet_chara02_rv.png"
+                    "url": "https://www.fate-go.jp/manga_fgo3/images/commnet_chara04.png"
                 },
             }
         ],
@@ -188,7 +195,12 @@ def drawFP(servants, missions) -> None:
 
     headers = {"Content-Type": "application/json"}
 
-    requests.post(endpoint, json=jsonData, headers=headers)
+    try:
+        response = requests.post(endpoint, json=jsonData, headers=headers)
+        response.raise_for_status()
+        print("drawFP response:", response.status_code, response.text)
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
 
 
 def LTO_Gacha(servants) -> None:
@@ -196,11 +208,10 @@ def LTO_Gacha(servants) -> None:
 
     message_servant = ""
 
-    if len(servants) > 0:
+    if servants:
         servants_atlas = requests.get(
-            "https://api.atlasacademy.io/export/JP/basic_svt.lang_en.json"
+            "https://api.atlasacademy.io/export/JP/basic_svt_lang_en.json"
         ).json()
-
         svt_dict = {svt["id"]: svt for svt in servants_atlas}
 
         for servant in servants:
@@ -208,19 +219,17 @@ def LTO_Gacha(servants) -> None:
             if objectId in svt_dict:
                 svt = svt_dict[objectId]
                 message_servant += f"`{svt['name']}` "
-            else:
-                continue
 
     jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": "FGO限定抽卡 - " + main.fate_region,
-                "description": "完成限定友情抽卡。列出抽卡结果.",
-                "color": 16711680,
+                "title": "FP Summoning - " + main.fate_region,
+                "description": "FP Summoning Gacha",
+                "color": dracula_colors["yellow"],
                 "fields": [
                     {
-                        "name": "限定卡池",
+                        "name": "Limited Cards",
                         "value": f"{message_servant}",
                         "inline": False,
                     }
@@ -235,19 +244,25 @@ def LTO_Gacha(servants) -> None:
 
     headers = {"Content-Type": "application/json"}
 
-    requests.post(endpoint, json=jsonData, headers=headers)
+    try:
+        response = requests.post(endpoint, json=jsonData, headers=headers)
+        response.raise_for_status()
+        print("LTO_Gacha response:", response.status_code, response.text)
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
 
 
 def Present(name, namegift, object_id_count) -> None:
+#def Present(name: str, namegift: str, object_id_count: int) -> None:
     endpoint = main.webhook_discord_url
 
     jsonData = {
         "content": None,
         "embeds": [
             {
-                "title": "FGO兑换系统 - JP",
-                "description": "兑换成功",
-                "color": 8388736,
+                "title": "Present Box",
+                "description": "",
+                "color": dracula_colors["purple"],
                 "fields": [
                     {
                         "name": f"{name}",
@@ -265,4 +280,9 @@ def Present(name, namegift, object_id_count) -> None:
 
     headers = {"Content-Type": "application/json"}
 
-    requests.post(endpoint, json=jsonData, headers=headers)
+    try:
+        response = requests.post(endpoint, json=jsonData, headers=headers)
+        response.raise_for_status()
+        print("Present response:", response.status_code, response.text)
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
