@@ -1,30 +1,49 @@
-name: FGO Login System
-
+name: Fate/Grand Order Login Manager JP
 on:
-  schedule:
-    - cron: "30 03 * * *"
-    - cron: "30 13 * * *"
-    - cron: "30 17 * * *"
   workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: 00 19 * * *
+    - cron: 26 22 * * *
+    - cron: 52 01 * * *
+    - cron: 18 05 * * *
+    - cron: 44 08 * * *
+    - cron: 10 12 * * *
+    - cron: 36 15 * * *
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.11]
-    steps:
-    
-      - name: Gettings files from Repo
-        uses: actions/checkout@v4
-        
-      - name: Install Requeriments
-        run: |
-          pip install -r requirements.txt
+    env:
+      TZ: America/Mexico_City
+    permissions:
+      actions: write
 
-      - name: Execute main script 1
-        run: |
-          python3 main.py
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          if [ ! -d "$HOME/.cache/pip" ]; then
+            mkdir -p "$HOME/.cache/pip"
+          fi
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+             ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-   
+      - run: pip install --cache-dir ~/.cache/pip -r requirements.txt --user
+
+      - name: Execute script
+        run: python3 main.py
         env:
           userIds: ${{ secrets.GAME_USERIDS }}
           authKeys: ${{ secrets.GAME_AUTHKEYS }}
@@ -34,4 +53,23 @@ jobs:
           APP_CHECK_SECRET: ${{ secrets.APP_CHECK_SECRET }}
           USER_AGENT_SECRET_2: ${{ secrets.USER_AGENT_SECRET_2 }}
 
+      #- name: Install RAR
+      #  run: sudo apt-get install rar -y
 
+      #- name: Archive login.json with password
+      #  run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
+
+     # - name: Upload login.rar artifact
+      #  uses: actions/upload-artifact@v4
+        #with:
+         # name: login-rar
+        #  path: login.rar
+
+  keepalive-job:
+    name: Keepalive Workflow
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
