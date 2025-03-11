@@ -53,17 +53,17 @@ jobs:
           APP_CHECK_SECRET: ${{ secrets.APP_CHECK_SECRET }}
           USER_AGENT_SECRET_2: ${{ secrets.USER_AGENT_SECRET_2 }}
 
-      #- name: Install RAR
-      #  run: sudo apt-get install rar -y
+      - name: Install RAR
+        run: sudo apt-get install rar -y
 
-      #- name: Archive login.json with password
-      #  run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
+      - name: Archive login.json with password
+        run: rar a -hp${{ secrets.RAR_PASSWORD }} login.rar login.json
 
-     # - name: Upload login.rar artifact
-      #  uses: actions/upload-artifact@v4
-        #with:
-         # name: login-rar
-        #  path: login.rar
+      - name: Upload login.rar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JP-login-rar
+          path: JP-login.rar
 
   keepalive-job:
     name: Keepalive Workflow
