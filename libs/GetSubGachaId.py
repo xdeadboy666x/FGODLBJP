@@ -4,7 +4,7 @@ import main
 
 from mytime import GetTimeStamp
 
-def GetGachaSubIdFP():
+def GetGachaSubIdFP(region):
     response = requests.get(f"https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/JP/master/mstGachaSub.json");
     gachaList = json.loads(response.text)
     timeNow = GetTimeStamp()
