@@ -111,8 +111,9 @@ def topLogin(data: list) -> None:
     except requests.exceptions.RequestException as e:
         print("Request failed:", e)
 
+
 def shop(item: str, quantity: str) -> None:
-#def shop(item: str, quantity: int) -> None:
+    # def shop(item: str, quantity: int) -> None:
     endpoint = main.webhook_discord_url
 
     jsonData = {
@@ -253,7 +254,7 @@ def LTO_Gacha(servants) -> None:
 
 
 def Present(name, namegift, object_id_count) -> None:
-#def Present(name: str, namegift: str, object_id_count: int) -> None:
+    # def Present(name: str, namegift: str, object_id_count: int) -> None:
     endpoint = main.webhook_discord_url
 
     jsonData = {
