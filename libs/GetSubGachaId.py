@@ -4,11 +4,8 @@ import main
 
 from mytime import GetTimeStamp
 
-
 def GetGachaSubIdFP(region):
-    response = requests.get(
-        f"https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/JP/master/mstGachaSub.json"
-    )
+    response = requests.get(f"https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/JP/master/mstGachaSub.json");
     gachaList = json.loads(response.text)
     timeNow = GetTimeStamp()
     priority = 0
@@ -28,11 +25,11 @@ def GetGachaSubIdFP(region):
     # 检查是否找到了合适的 gacha
     if not goodGacha:
         main.logger.info("No suitable gacha found")
-        return None
+        return None  
 
     # 确认 'id' 键是否存在
     if "id" not in goodGacha:
         main.logger.info("Key 'id' not found in the selected gacha")
-        return None
+        return None  
 
     return str(goodGacha["id"])
