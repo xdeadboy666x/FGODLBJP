@@ -26,7 +26,7 @@ jobs:
 
       - name: Run cobro.py
         run: |
-          python3 $HOME/cobro.py ${{ github.event.inputs.vehiculo }} ${{ github.event.inputs.entry_time }} ${{ github.event.inputs.exit_time }}
+          python3 cobro.py ${{ github.event.inputs.vehiculo }} ${{ github.event.inputs.entry_time }} ${{ github.event.inputs.exit_time }}
 
       - name: Check if it's 18:45 in Mexico City
         id: check_time
