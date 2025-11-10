@@ -1,0 +1,34 @@
+name: Cobro Log Handler
+
+on:
+  workflow_dispatch:
+    inputs:
+      entry:
+        description: 'Entry string from Discord (e.g. jetta auto 10:30 12:40)'
+        required: true
+        type: string
+
+jobs:
+  cobro:
+    runs-on: ubuntu-latest
+    env:
+      TZ: America/Mexico_City
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt --user
+
+      - name: Run Cobro Script
+        run: |
+          echo "Triggered entry: ${{ github.event.inputs.entry }}"
+          python3 cobro.py "${{ github.event.inputs.entry }}"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
