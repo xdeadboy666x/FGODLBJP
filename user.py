@@ -402,7 +402,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         # 5/15 【期間限定】「アルトリア･ペンドラゴン〔リリィ〕フレンドポイント召喚」！
 
         nowAt = mytime.GetTimeStamp()
-        closedAt = 1747972799
+        closedAt = 1748404799
         
         if nowAt > closedAt:
             main.logger.info(f"\n {'=' * 40} \n [+] 期間限定召喚 已结束 \n {'=' * 40} ")
