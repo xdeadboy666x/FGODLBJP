@@ -1,34 +1,48 @@
-name: Cobro Log Handler
+name: Cobro Auto Log
 
 on:
   workflow_dispatch:
     inputs:
-      entry:
-        description: 'Entry string from Discord (e.g. jetta auto 10:30 12:40)'
+      vehiculo:
+        description: "Vehicle name"
         required: true
-        type: string
+      entry_time:
+        description: "Entry time"
+        required: true
+      exit_time:
+        description: "Exit time"
+        required: true
 
 jobs:
   cobro:
     runs-on: ubuntu-latest
     env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       TZ: America/Mexico_City
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Dependencies
-        run: pip install -r requirements.txt --user
-
-      - name: Run Cobro Script
+      - name: Run cobro.py
         run: |
-          echo "Triggered entry: ${{ github.event.inputs.entry }}"
-          python3 cobro.py "${{ github.event.inputs.entry }}"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          python3 $HOME/cobro.py ${{ github.event.inputs.vehiculo }} ${{ github.event.inputs.entry_time }} ${{ github.event.inputs.exit_time }}
+
+      - name: Check if it's 18:45 in Mexico City
+        id: check_time
+        run: |
+          now=$(date +'%H:%M')
+          if [ "$now" = "18:45" ]; then
+            echo "run_total=true" >> $GITHUB_ENV
+          else
+            echo "run_total=false" >> $GITHUB_ENV
+          fi
+
+      - name: Post total log to Discord
+        if: env.run_total == 'true'
+        run: |
+          total_log=$(python3 $HOME/cobro.py --print-total)
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"**Daily total:**\n$total_log\"}" \
+               "$DISCORD_WEBHOOK"
