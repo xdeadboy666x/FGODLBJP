@@ -1,9 +1,8 @@
 import os
 import re
-import requests
 from datetime import datetime, timedelta
 
-# === Configuration ===
+# === Configuration === 
 if os.path.exists("/sdcard"):
     LOG_DIR = "/sdcard/reg"
 else:
@@ -22,7 +21,6 @@ def append_entry(entry: str):
     with open(LOG_FILE, "a") as f:
         f.write(line)
     print(f"✅ Logged: {line.strip()}")
-    send_discord(f"📝 Nuevo registro: `{entry}`")
 
 def parse_entry(entry: str):
     """
@@ -35,16 +33,20 @@ def parse_entry(entry: str):
         raise ValueError(f"Invalid entry format: {entry}")
     return match.groups()
 
-def calculate_price(vehicle_type: str, entry_time: str, exit_time: str):
-    """Calculate price depending on vehicle type (10/h moto, 20/h auto)."""
+def calculate_price(tipo, entry_time, exit_time):
+    """
+    Price per hour:
+    - 10 pesos/hour for 'moto'
+    - 20 pesos/hour otherwise
+    """
     t1 = datetime.strptime(entry_time, "%H:%M")
     t2 = datetime.strptime(exit_time, "%H:%M")
     if t2 < t1:
-        t2 += timedelta(days=1)
-
+        t2 += timedelta(days=1)  # handle overnight entries
     hours = (t2 - t1).seconds / 3600
-    rate = 10 if vehicle_type.lower() == "moto" else 20
-    return round(hours * rate, 2)
+    rate = 10 if tipo.lower() == "moto" else 20
+    price = round(hours * rate, 2)
+    return price
 
 def total_of_day():
     """Compute total price for all entries today."""
@@ -55,54 +57,48 @@ def total_of_day():
     total = 0.0
     with open(LOG_FILE, "r") as f:
         for line in f:
-            if not line.startswith(today):
-                continue
-            parts = line.strip().split("|", 1)
-            if len(parts) < 2:
-                continue
-            entry = parts[1].strip()
-            try:
-                _, tipo, e1, e2 = parse_entry(entry)
-                total += calculate_price(tipo, e1, e2)
-            except Exception:
-                continue
+            if line.startswith(today):
+                parts = line.strip().split("|", 1)
+                if len(parts) < 2:
+                    continue
+                entry = parts[1].strip()
+                try:
+                    _, tipo, e1, e2 = parse_entry(entry)
+                    total += calculate_price(tipo, e1, e2)
+                except Exception:
+                    continue
     return total
 
 def send_discord(content):
     """Send a message to your Discord webhook."""
     if not DISCORD_WEBHOOK:
-        print("⚠️ No Discord webhook configured.")
         return
+    import requests
     try:
         requests.post(DISCORD_WEBHOOK, json={"content": content})
     except Exception as e:
-        print(f"⚠️ Discord error: {e}")
+        print(f"⚠️ Discord send error: {e}")
 
 def main():
     entry = os.getenv("ENTRY")
-
-    # If no entry is passed, assume it's a scheduled summary run
     if not entry:
-        now = datetime.now()
-        if now.hour == 18 and now.minute >= 45:
-            total = total_of_day()
-            msg = f"💰 Total del día ({datetime.now().date()}): ${total:.2f}"
-            print(msg)
-            send_discord(msg)
-        else:
-            print("ℹ️ No entry provided, and not time for summary.")
+        print("⚠️ No entry provided (ENTRY env var missing).")
         return
 
-    # Otherwise, log normal entry
     append_entry(entry)
+    vehiculo, tipo, entry_time, exit_time = parse_entry(entry)
+    price = calculate_price(tipo, entry_time, exit_time)
+    msg = f"🅿️ Nuevo registro: {vehiculo} ({tipo}) {entry_time} → {exit_time}\n💵 Cobro: {price:.2f} pesos"
+    print(msg)
+    send_discord(msg)
 
-    # Also send total automatically if it's 18:45+
-    now = datetime.now()
-    if now.hour == 18 and now.minute >= 45:
+    # At 18:45, also report total of the day
+    now = datetime.now().strftime("%H:%M")
+    if now == "18:45":
         total = total_of_day()
-        msg = f"💰 Total del día ({datetime.now().date()}): ${total:.2f}"
-        print(msg)
-        send_discord(msg)
+        total_msg = f"💰 Total del día ({datetime.now().date()}): {total:.2f}"
+        print(total_msg)
+        send_discord(total_msg)
 
 if __name__ == "__main__":
     main()
