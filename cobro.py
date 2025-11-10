@@ -1,9 +1,14 @@
 import os
 import re
+import requests
 from datetime import datetime, timedelta
 
 # === Configuration ===
-LOG_DIR = "/sdcard/reg"
+if os.path.exists("/sdcard"):
+    LOG_DIR = "/sdcard/reg"
+else:
+    LOG_DIR = os.path.expanduser("~/reg")
+
 LOG_FILE = os.path.join(LOG_DIR, "cobro.log")
 DISCORD_WEBHOOK = os.getenv("webhookDiscord")
 
@@ -17,6 +22,7 @@ def append_entry(entry: str):
     with open(LOG_FILE, "a") as f:
         f.write(line)
     print(f"✅ Logged: {line.strip()}")
+    send_discord(f"📝 Nuevo registro: `{entry}`")
 
 def parse_entry(entry: str):
     """
@@ -30,17 +36,13 @@ def parse_entry(entry: str):
     return match.groups()
 
 def calculate_price(entry_time, exit_time):
-    """
-    Example price calculation: 10 pesos per hour (rounded up)
-    Modify this logic as needed.
-    """
+    """Simple price logic: 10 pesos/hour (rounded up)."""
     t1 = datetime.strptime(entry_time, "%H:%M")
     t2 = datetime.strptime(exit_time, "%H:%M")
     if t2 < t1:
         t2 += timedelta(days=1)  # handle overnight entries
     hours = (t2 - t1).seconds / 3600
-    price = round(hours * 10, 2)
-    return price
+    return round(hours * 10, 2)
 
 def total_of_day():
     """Compute total price for all entries today."""
@@ -51,38 +53,52 @@ def total_of_day():
     total = 0.0
     with open(LOG_FILE, "r") as f:
         for line in f:
-            if line.startswith(today):
-                parts = line.strip().split("|", 1)
-                if len(parts) < 2:
-                    continue
-                entry = parts[1].strip()
-                try:
-                    _, _, e1, e2 = parse_entry(entry)
-                    total += calculate_price(e1, e2)
-                except Exception:
-                    continue
+            if not line.startswith(today):
+                continue
+            parts = line.strip().split("|", 1)
+            if len(parts) < 2:
+                continue
+            entry = parts[1].strip()
+            try:
+                _, _, e1, e2 = parse_entry(entry)
+                total += calculate_price(e1, e2)
+            except Exception:
+                continue
     return total
 
 def send_discord(content):
     """Send a message to your Discord webhook."""
     if not DISCORD_WEBHOOK:
+        print("⚠️ No Discord webhook configured.")
         return
-    import requests
-    requests.post(DISCORD_WEBHOOK, json={"content": content})
+    try:
+        requests.post(DISCORD_WEBHOOK, json={"content": content})
+    except Exception as e:
+        print(f"⚠️ Discord error: {e}")
 
 def main():
     entry = os.getenv("ENTRY")
+
+    # If no entry is passed, assume it's a scheduled summary run
     if not entry:
-        print("⚠️ No entry provided (ENTRY env var missing).")
+        now = datetime.now()
+        if now.hour == 18 and now.minute >= 45:
+            total = total_of_day()
+            msg = f"💰 Total del día ({datetime.now().date()}): ${total:.2f}"
+            print(msg)
+            send_discord(msg)
+        else:
+            print("ℹ️ No entry provided, and not time for summary.")
         return
 
+    # Otherwise, log normal entry
     append_entry(entry)
 
-    # Check if time is 18:45
-    now = datetime.now().strftime("%H:%M")
-    if now == "18:45":
+    # Also send total automatically if it's 18:45+
+    now = datetime.now()
+    if now.hour == 18 and now.minute >= 45:
         total = total_of_day()
-        msg = f"💰 Total del día ({datetime.now().date()}): {total:.2f}"
+        msg = f"💰 Total del día ({datetime.now().date()}): ${total:.2f}"
         print(msg)
         send_discord(msg)
 
