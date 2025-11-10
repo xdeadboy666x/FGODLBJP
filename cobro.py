@@ -35,14 +35,16 @@ def parse_entry(entry: str):
         raise ValueError(f"Invalid entry format: {entry}")
     return match.groups()
 
-def calculate_price(entry_time, exit_time):
-    """Simple price logic: 10 pesos/hour (rounded up)."""
+def calculate_price(vehicle_type: str, entry_time: str, exit_time: str):
+    """Calculate price depending on vehicle type (10/h moto, 20/h auto)."""
     t1 = datetime.strptime(entry_time, "%H:%M")
     t2 = datetime.strptime(exit_time, "%H:%M")
     if t2 < t1:
-        t2 += timedelta(days=1)  # handle overnight entries
+        t2 += timedelta(days=1)
+
     hours = (t2 - t1).seconds / 3600
-    return round(hours * 10, 2)
+    rate = 10 if vehicle_type.lower() == "moto" else 20
+    return round(hours * rate, 2)
 
 def total_of_day():
     """Compute total price for all entries today."""
@@ -60,8 +62,8 @@ def total_of_day():
                 continue
             entry = parts[1].strip()
             try:
-                _, _, e1, e2 = parse_entry(entry)
-                total += calculate_price(e1, e2)
+                _, tipo, e1, e2 = parse_entry(entry)
+                total += calculate_price(tipo, e1, e2)
             except Exception:
                 continue
     return total
