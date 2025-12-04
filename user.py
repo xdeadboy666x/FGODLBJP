@@ -499,6 +499,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
                 webhook.LTO_Gacha(servantArray)
                 return
 
+
         if not found_svt:
             main.logger.info(f"\n {'=' * 40} \n [+] 不满足活动条件..不能参加限定召唤 \n {'=' * 40} ")
             return 
@@ -517,8 +518,8 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         self.builder_.AddParameter('num', '10')
         self.builder_.AddParameter('ticketItemId', '0')
         self.builder_.AddParameter('shopIdIndex', '1')
-        #self.builder_.AddParameter('gachaSubId', gachaSubId)
-        self.builder_.AddParameter('gachaSubId', '449')
+        self.builder_.AddParameter('gachaSubId', gachaSubId)
+        #self.builder_.AddParameter('gachaSubId', '449')
 
         main.logger.info(f"\n {'=' * 40} \n [+] 友情卡池ID : {gachaSubId}\n {'=' * 40} " )
         data = self.Post(f'{fgourl.server_addr_}/gacha/draw?_userId={self.user_id_}')
