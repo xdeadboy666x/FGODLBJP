@@ -402,7 +402,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         # 5/15 【期間限定】「アルトリア･ペンドラゴン〔リリィ〕フレンドポイント召喚」！
 
         nowAt = mytime.GetTimeStamp()
-        closedAt = 1747972799
+        closedAt = 1748404799
         
         if nowAt > closedAt:
             main.logger.info(f"\n {'=' * 40} \n [+] 期間限定召喚 已结束 \n {'=' * 40} ")
@@ -552,10 +552,16 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         webhook.drawFP(servantArray, missionArray)
 
+    
     def topHome(self):
         self.Post(f'{fgourl.server_addr_}/home/top?_userId={self.user_id_}')
+        
+        time.sleep(2)
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
+        time.sleep(1)
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
 
-
+    
     def lq001(self):
          # https://game.fate-go.jp/present/list?
           
@@ -576,7 +582,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         present_ids = []
         for item in data['cache']['replaced']['userPresentBox']:
-            if item['objectId'] in [2, 6, 11, 16, 3, 46, 18, 48, 4001, 100, 101, 102, 103, 104, 1, 4, 7998, 7999, 1000, 2000, 6999, 9570400, 9670400]: #添加你需要领取的物品 Id 或者 baseSvtId 进入筛选列表
+            if item['objectId'] in [2, 6, 11, 16, 3, 46, 18, 48, 4001, 100, 101, 102, 103, 104, 1, 4, 7998, 7999, 1000, 2000, 6999, 9570400, 9670400, 9670500, 9570500]: #添加你需要领取的物品 Id 或者 baseSvtId 进入筛选列表
                 present_ids.append(str(item['presentId']))
 
         with open('JJM.json', 'w') as f:
@@ -855,3 +861,17 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
                    
         else:
             main.logger.info(f"\n {'=' * 40} \n [+] 礼物盒中交換券なし(´･ω･`) \n {'=' * 40} ")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
