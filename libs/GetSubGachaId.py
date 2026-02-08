@@ -4,7 +4,7 @@ import main
 
 from mytime import GetTimeStamp
 
-def GetGachaSubIdFP():
+def GetGachaSubIdFP(region):
     response = requests.get(f"https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json");
     gachaList = json.loads(response.text)
     url = "https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json"
