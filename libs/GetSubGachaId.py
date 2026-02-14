@@ -41,3 +41,9 @@ def GetGachaSubIdFP(region):
         return None  
 
     return str(goodGacha["id"])
+    # 确认 'id' 键是否存在
+    if "id" not in goodGacha:
+        main.logger.info("Key 'id' not found in the selected gacha")
+        return None  
+
+    return str(goodGacha["id"])
