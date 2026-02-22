@@ -4,7 +4,7 @@ import main
 
 from mytime import GetTimeStamp
 
-def GetGachaSubIdFP(region):
+def GetGachaSubIdFP():
     response = requests.get(f"https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json");
     gachaList = json.loads(response.text)
     url = "https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json"
@@ -35,12 +35,6 @@ def GetGachaSubIdFP(region):
         main.logger.info("No suitable gacha found")
         return None  
 
-    # 确认 'id' 键是否存在
-    if "id" not in goodGacha:
-        main.logger.info("Key 'id' not found in the selected gacha")
-        return None  
-
-    return str(goodGacha["id"])
     # 确认 'id' 键是否存在
     if "id" not in goodGacha:
         main.logger.info("Key 'id' not found in the selected gacha")
