@@ -552,7 +552,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
     def drawFP(self):
         #SubID判定有点不准了.偶尔错误抽卡失败...等哪天闲暇再修
-        gachaSubId = GetGachaSubIdFP(region)
+        gachaSubId = GetGachaSubIdFP()
         main.logger.info(f"\n {'=' * 40} \n [+] 友情卡池ID : {gachaSubId}\n {'=' * 40} " )
 
         if gachaSubId is None:
@@ -873,7 +873,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
     def Present(self):
         #素材交換券
-        response = requests.get("https://api.atlasacademy.io/export/JP/nice_item.json")
+        response = requests.get("https://api.atlasacademy.io/export/JP/nice_item_lang_en.json")
         if response.status_code == 200:
             with open("nice_item.json", 'wb') as f:
                 f.write(response.content)
@@ -953,6 +953,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         else:
             main.logger.info(f"\n {'=' * 40} \n [+] 礼物盒中交換券なし(´･ω･`) \n {'=' * 40} ")
+
 
 
 
