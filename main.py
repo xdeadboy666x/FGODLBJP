@@ -30,7 +30,7 @@ def get_latest_verCode():
     response_data = json.loads(response)
 
     return response_data['verCode']
-    
+
 def get_latest_appver():
     endpoint = "https://raw.githubusercontent.com/DNNDHH/FGO-VerCode-extractor/JP/VerCode.json"
     response = requests.get(endpoint).text
@@ -69,8 +69,8 @@ def main():
                 #instance.LTO_Gacha()
                 #instance.LTO_drawFP()
 
-            
-                
+
+
 
 
             except Exception as ex:
