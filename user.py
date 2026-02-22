@@ -875,7 +875,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         #素材交換券
         response = requests.get("https://api.atlasacademy.io/export/JP/nice_item_lang_en.json")
         if response.status_code == 200:
-            with open("nice_item.json", 'wb') as f:
+            with open("nice_item_lang_en.json", 'wb') as f:
                 f.write(response.content)
 
         with open('present.json', 'r', encoding='utf-8') as file:
@@ -911,7 +911,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         if first_object_id is not None:
 
-           with open('nice_item.json', 'r', encoding='utf-8') as file:
+           with open('nice_item_lang_en.json', 'r', encoding='utf-8') as file:
                itemdata = json.load(file)
 
            item_data = next((item for item in itemdata if item.get('id') == first_object_id), None)
