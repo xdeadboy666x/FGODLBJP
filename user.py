@@ -552,7 +552,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
     def drawFP(self):
         #SubID判定有点不准了.偶尔错误抽卡失败...等哪天闲暇再修
-        gachaSubId = GetGachaSubIdFP(region)
+        gachaSubId = GetGachaSubIdFP('JP')
         main.logger.info(f"\n {'=' * 40} \n [+] 友情卡池ID : {gachaSubId}\n {'=' * 40} " )
 
         if gachaSubId is None:
@@ -960,7 +960,49 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
 
 
+import requests
+import json
+import main
 
+from mytime import GetTimeStamp
+
+def GetGachaSubIdFP():
+    response = requests.get(f"https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json");
+    gachaList = json.loads(response.text)
+    url = "https://raw.githubusercontent.com/DNNDHH/GSubList/Main/update.json"
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json",
+    }
+    response = requests.get(url, headers=headers, timeout=10)
+    response.raise_for_status()
+    gachaList = response.json()
+    timeNow = GetTimeStamp()
+    priority = 0
+    goodGacha = {}
+
+    for gacha in gachaList:
+        openedAt = gacha["openedAt"]
+        closedAt = gacha["closedAt"]
+
+        # 修正逻辑运算符
+        if openedAt <= timeNow and timeNow <= closedAt:
+            p = int(gacha["priority"])
+            if p > priority:
+                priority = p
+                goodGacha = gacha
+
+    # 检查是否找到了合适的 gacha
+    if not goodGacha:
+        main.logger.info("No suitable gacha found")
+        return None  
+
+    # 确认 'id' 键是否存在
+    if "id" not in goodGacha:
+        main.logger.info("Key 'id' not found in the selected gacha")
+        return None  
+
+    return str(goodGacha["id"])
 
 
 
