@@ -8,35 +8,41 @@ import coloredlogs
 import logging
 import sys
 
-userIds = os.environ['userIds'].split(',')
-authKeys = os.environ['authKeys'].split(',')
-secretKeys = os.environ['secretKeys'].split(',')
-webhook_discord_url = os.environ['webhookDiscord']
-device_info = os.environ.get('DEVICE_INFO_SECRET')
-appCheck = os.environ.get('APP_CHECK_SECRET')
-user_agent_2 = os.environ.get('USER_AGENT_SECRET_2')
-fate_region = 'JP'
+userIds = os.environ["userIds"].split(",")
+authKeys = os.environ["authKeys"].split(",")
+secretKeys = os.environ["secretKeys"].split(",")
+webhook_discord_url = os.environ["webhookDiscord"]
+device_info = os.environ.get("DEVICE_INFO_SECRET")
+appCheck = os.environ.get("APP_CHECK_SECRET")
+user_agent_2 = os.environ.get("USER_AGENT_SECRET_2")
+fate_region = "JP"
 
 userNums = len(userIds)
 authKeyNums = len(authKeys)
 secretKeyNums = len(secretKeys)
 
 logger = logging.getLogger("FGO Daily Login")
-coloredlogs.install(fmt='%(asctime)s %(name)s %(levelname)s %(message)s')
+coloredlogs.install(fmt="%(asctime)s %(name)s %(levelname)s %(message)s")
+
 
 def get_latest_verCode():
-    endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/master/jp.json"
+    endpoint = (
+        "https://raw.githubusercontent.com/DNNDHH/FGO-VerCode-extractor/JP/VerCode.json"
+    )
     response = requests.get(endpoint).text
     response_data = json.loads(response)
 
-    return response_data['verCode']
+    return response_data["verCode"]
+
 
 def get_latest_appver():
-    endpoint = "https://raw.githubusercontent.com/xdeadboy666x/FGO-JP-NA-VerCode-Extractor/master/jp.json"
+    endpoint = (
+        "https://raw.githubusercontent.com/DNNDHH/FGO-VerCode-extractor/JP/VerCode.json"
+    )
     response = requests.get(endpoint).text
     response_data = json.loads(response)
 
-    return response_data['appVer']
+    return response_data["appVer"]
 
 
 def main():
@@ -61,20 +67,17 @@ def main():
                 instance.lq003()
                 time.sleep(1)
 
-                #if "--Free_Gacha" in sys.argv:
-                    #instance.Free_Gacha()
+                # if "--Free_Gacha" in sys.argv:
+                # instance.Free_Gacha()
 
                 instance.drawFP()
                 time.sleep(1)
-                #instance.LTO_Gacha()
-                #instance.LTO_drawFP()
-
-
-
-
+                # instance.LTO_Gacha()
+                # instance.LTO_drawFP()
 
             except Exception as ex:
                 logger.error(ex)
+
 
 if __name__ == "__main__":
     main()
